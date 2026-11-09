@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 32" width="68" height="32" fill="none">
+  <rect width="68" height="32" rx="4" fill="#E2136E"/>
+  <g transform="translate(6, 6)">
+    <!-- bKash bird mark -->
+    <path d="M17.5 0L6.8 4.8L14.4 12L17.5 0Z" fill="#FFFFFF"/>
+    <path d="M6.8 4.8L0 9.5L8.6 12.3L6.8 4.8Z" fill="#FFFFFF" fill-opacity="0.8"/>
+    <path d="M8.6 12.3L14.4 12L11 17L8.6 12.3Z" fill="#FFFFFF"/>
+    <path d="M14.4 12L18.5 15L17.5 0L14.4 12Z" fill="#FFFFFF" fill-opacity="0.9"/>
+  </g>
+  <text x="28" y="21" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="13" fill="#FFFFFF" letter-spacing="-0.3">bKash</text>
+</svg>
+

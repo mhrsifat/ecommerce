@@ -1,0 +1,90 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Deployment Tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass rsync
+
+      - name: Deploy Files via Rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          sshpass -p "$SSH_PASS" rsync -rlptvzc \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" \
+            --exclude '.env' \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'vendor/' \
+            --exclude 'node_modules/' \
+            --exclude 'tests/' \
+            --exclude 'storage/logs/*' \
+            --exclude 'storage/framework/cache/*' \
+            --exclude 'storage/framework/sessions/*' \
+            --exclude 'storage/framework/views/*' \
+            ./ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH"
+
+      - name: Run Server-Side Build & Deployment
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          sshpass -p "$SSH_PASS" ssh -p "$SSH_PORT" -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" "
+            cd '$DEPLOY_PATH' &&
+
+            # If .env does not exist on the server, create from .env.example
+            if [ ! -f .env ]; then
+              echo 'No .env found on server. Copying from .env.example...' &&
+              cp .env.example .env &&
+              touch database/database.sqlite 2>/dev/null || true &&
+              php artisan key:generate --force || true
+            fi &&
+
+            # Load NVM if present on the server
+            export NVM_DIR=\"\$HOME/.nvm\" &&
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\" || true &&
+
+            # PHP Dependencies
+            composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction &&
+
+            # Server-side Node Build
+            npm ci &&
+            npm run build &&
+
+            # Laravel Setup & Optimizations
+            php artisan storage:link || true &&
+            php artisan migrate --force &&
+
+            # Run seed automatically ONLY on the first deployment
+            if [ ! -f .deploy-cache/seeded ]; then
+              echo 'First deployment detected. Running initial database seeds...' &&
+              mkdir -p .deploy-cache &&
+              php artisan db:seed --force &&
+              touch .deploy-cache/seeded
+            fi &&
+
+            php artisan optimize:clear &&
+            php artisan optimize &&
+            php artisan queue:restart || true &&
+            sudo supervisorctl restart laravel-services:* 2>&1 || true
+          "
