@@ -74,8 +74,8 @@ Follow these simple steps to run the project locally from scratch:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/mhrsifat/simple-ecommerce.git
-cd simple-ecommerce
+git clone https://github.com/mhrsifat/ecommerce.git
+cd ecommerce
 ```
 
 ### 2. Install PHP Dependencies
