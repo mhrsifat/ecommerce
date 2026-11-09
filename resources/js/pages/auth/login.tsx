@@ -154,5 +154,5 @@ export default function Login({ status }: Props) {
 
 Login.layout = {
     title: 'Sign In',
-    description: 'Log in as an Administrator or Shop Owner',
+    description: 'Enter your credentials to login',
 };

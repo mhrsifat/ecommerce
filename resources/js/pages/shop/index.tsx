@@ -292,45 +292,6 @@ export default function ShopIndex({
                         <Pagination data={shopProducts} />
                     </div>
                 )}
-
-                {/* 5. Trust / Value Propositions */}
-                <div className="grid gap-4 rounded-3xl border bg-muted/20 p-6 sm:grid-cols-3 sm:p-8">
-                    <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Store className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-sm">Direct From Verified Shops</h4>
-                            <p className="text-xs text-muted-foreground">
-                                Authentic products provided by verified local retailers
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <ShieldCheck className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-sm">Shop-Specific Warranties</h4>
-                            <p className="text-xs text-muted-foreground">
-                                Dedicated seller support and manufacturer guarantees
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Truck className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-sm">Fast Dispatch & Delivery</h4>
-                            <p className="text-xs text-muted-foreground">
-                                Nationwide express delivery direct from seller stores
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </ShopLayout>
     );
